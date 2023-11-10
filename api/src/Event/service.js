@@ -40,10 +40,10 @@ async function insert(newEvent) {
   }
 }
 
-async function getbydate(event) {
+async function getbydate() {
   try {
     const currentDate = new Date();
-    event = await eventModel.find({ on: { $gte: currentDate } });
+    const event = await eventModel.find({ on: { $gte: currentDate } });
     if (event) {
       return {
         status: true,
