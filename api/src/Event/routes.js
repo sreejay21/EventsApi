@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const logger =require('./logger')
 const eventController = require("./controller");
 const eventModel = require("./model");
 var bodyParser = require("body-parser");
@@ -7,6 +8,7 @@ var jsonParser = bodyParser.json();
 var validationEvent = require("./validation");
 var enums = require("../../../enums");
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
+
 
 //Adding a new event
 router.post(
@@ -31,17 +33,18 @@ router.post(
           result: dbActionFeedback.result,
           error: null,
         });
+        logger.eventLogger.log('info','Successfully added new Event')
       } else {
-        res.status(500).json({
+        res.status(400).json({
           status: false,
-          statusCode: enums.INTERNAL_SERVER_ERROR,
+          statusCode: enums.BAD_REQUEST,
           count: 0,
           result: null,
           error: null,
         });
+        logger.eventLogger.log('error','Error in adding new Event')
       }
     } catch (error) {
-      console.log(error);
       res.status(500).json({
         status: false,
         statusCode: enums.INTERNAL_SERVER_ERROR,
@@ -49,6 +52,7 @@ router.post(
         result: null,
         error: null,
       });
+      logger.eventLogger.log('error','Error in adding new Event')
     }
     res.end();
   }
@@ -62,9 +66,7 @@ router.get(
   async function (req, res, next) {
     try {
       var dbActionFeedback = await eventController.getbydate(req.params.date);
-      //console.log(dbActionFeedback);
       if (dbActionFeedback) {
-        console.log(dbActionFeedback);
         res.status(200).json({
           status: true,
           statusCode: enums.OK,
@@ -73,6 +75,7 @@ router.get(
 
           error: null,
         });
+        logger.eventLogger.log('info','Successfully Got the Event')
       } else {
         res.status(500).json({
           status: false,
@@ -81,6 +84,7 @@ router.get(
           result: null,
           error: null,
         });
+        logger.eventLogger.log('error','Error in getting the Event')
       }
     } catch (error) {
       res.status(500).json({
@@ -90,6 +94,7 @@ router.get(
         result: null,
         error: error,
       });
+      logger.eventLogger.log('error','Error in getting the Event')
     }
     res.end();
   }
@@ -100,7 +105,6 @@ router.get(
 router.get("/getbyid/:id", urlencodedParser, async function (req, res, next) {
   try {
     var dbActionFeedback = await eventController.getbyid(req.params.id);
-    console.log(dbActionFeedback);
     if (dbActionFeedback.status) {
       res.status(200).json({
         status: true,
@@ -109,6 +113,7 @@ router.get("/getbyid/:id", urlencodedParser, async function (req, res, next) {
         result: dbActionFeedback.result,
         error: null,
       });
+      logger.eventLogger.log('info','Successfully got the Event')
     } else {
       res.status(404).json({
         status: false,
@@ -117,6 +122,7 @@ router.get("/getbyid/:id", urlencodedParser, async function (req, res, next) {
         result: null,
         error: null,
       });
+      logger.eventLogger.log('error','Error in getting the Event')
     }
   } catch (error) {
     res.status(500).json({
@@ -126,6 +132,7 @@ router.get("/getbyid/:id", urlencodedParser, async function (req, res, next) {
       result: null,
       error: error,
     });
+    logger.eventLogger.log('error','Error in getting the Event')
   }
   res.end();
 });
@@ -136,10 +143,10 @@ router.put("/update/:id", jsonParser, async function (req, res, next) {
   var idQuery = req.params.id;
   var eventNewData = new eventModel({
     title: req.body.title,
-    Details: req.body.details,
+    details: req.body.details,
     on: req.body.on,
     venue: req.body.venue,
-    RegistrationLink: req.body.registrationLink,
+    registrationLink: req.body.registrationLink,
   });
   try {
     var dbActionFeedback = await eventController.update(idQuery, eventNewData);
@@ -151,6 +158,7 @@ router.put("/update/:id", jsonParser, async function (req, res, next) {
         result: dbActionFeedback.result,
         error: null,
       });
+      logger.eventLogger.log('info','Successfully updated the Event')
     } else {
       if (dbActionFeedback.statusCode == enums.NOT_FOUND) {
         res.status(404).json({
@@ -160,6 +168,7 @@ router.put("/update/:id", jsonParser, async function (req, res, next) {
           result: null,
           error: null,
         });
+        logger.eventLogger.log('error','Error in updating the Event')
       } else {
         res.status(500).json({
           status: false,
@@ -178,7 +187,7 @@ router.put("/update/:id", jsonParser, async function (req, res, next) {
       result: null,
       error: null,
     });
-    console.log(error);
+    logger.eventLogger.log('error','Error in updating the Event')
   }
   res.end();
 });
@@ -199,6 +208,7 @@ router.delete(
           result: null,
           error: null,
         });
+        logger.eventLogger.log('info','Successfully deleted the Event')
       } else {
         if (dbActionFeedback.statusCode == enums.NOT_FOUND) {
           res.status(404).json({
@@ -208,6 +218,7 @@ router.delete(
             result: null,
             error: null,
           });
+          logger.eventLogger.log('error','Error in deleting the Event')
         } else {
           res.status(500).json({
             status: false,
@@ -226,6 +237,7 @@ router.delete(
         result: null,
         error: null,
       });
+      logger.eventLogger.log('error','Error in deleting the Event')
     }
 
     res.end();

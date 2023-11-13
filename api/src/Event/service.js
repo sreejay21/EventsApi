@@ -40,10 +40,9 @@ async function insert(newEvent) {
   }
 }
 
-async function getbydate() {
+async function getbydate(date) {
   try {
-    const currentDate = new Date();
-    const event = await eventModel.find({ on: { $gte: currentDate } });
+    const event = await eventModel.find({ on: { $gte: date } });
     if (event) {
       return {
         status: true,
@@ -75,7 +74,6 @@ async function getbydate() {
 async function getbyid(id) {
   try {
     var event = await eventModel.findById(id);
-    console.log(event);
     if (event) {
       return {
         status: true,
@@ -108,7 +106,6 @@ async function update(id, eventNewData) {
   var eventToBeUpdated = await eventModel.findOne({ _id: id });
   var isUpdated = false;
   var errorMsg = "";
-  console.log(eventToBeUpdated);
   try {
     if (eventToBeUpdated) {
       (eventToBeUpdated.title = eventNewData.title),

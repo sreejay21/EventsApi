@@ -5,8 +5,8 @@ async function insert(newEvent){
     return await eventService.insert(newEvent);
 }
 
-async function getbydate(event){
-    return await eventService.getbydate(event)
+async function getbydate(date){
+    return await eventService.getbydate(date)
 }
 
 async function getbyid(id){
