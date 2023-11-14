@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const logger =require('./logger')
+const {eventLogger,errorLogger} =require('./logger')
 const eventController = require("./controller");
 const eventModel = require("./model");
 var bodyParser = require("body-parser");
@@ -33,7 +33,7 @@ router.post(
           result: dbActionFeedback.result,
           error: null,
         });
-        logger.eventLogger.log('info','Successfully added new Event')
+        eventLogger.info('Successfully added new Event')
       } else {
         res.status(400).json({
           status: false,
@@ -42,7 +42,7 @@ router.post(
           result: null,
           error: null,
         });
-        logger.eventLogger.log('error','Error in adding new Event')
+        errorLogger.error('Error in adding new Event')
       }
     } catch (error) {
       res.status(500).json({
@@ -52,7 +52,7 @@ router.post(
         result: null,
         error: null,
       });
-      logger.eventLogger.log('error','Error in adding new Event')
+      errorLogger.error('Error in adding new Event')
     }
     res.end();
   }
@@ -75,7 +75,7 @@ router.get(
 
           error: null,
         });
-        logger.eventLogger.log('info','Successfully Got the Event')
+        eventLogger.info('Successfully Got the Event')
       } else {
         res.status(500).json({
           status: false,
@@ -84,7 +84,7 @@ router.get(
           result: null,
           error: null,
         });
-        logger.eventLogger.log('error','Error in getting the Event')
+      errorLogger.error('Error in getting the Event')
       }
     } catch (error) {
       res.status(500).json({
@@ -94,7 +94,7 @@ router.get(
         result: null,
         error: error,
       });
-      logger.eventLogger.log('error','Error in getting the Event')
+      errorLogger.error('Error in getting the Event')
     }
     res.end();
   }
@@ -113,7 +113,7 @@ router.get("/getbyid/:id", urlencodedParser, async function (req, res, next) {
         result: dbActionFeedback.result,
         error: null,
       });
-      logger.eventLogger.log('info','Successfully got the Event')
+   eventLogger.info('Successfully got the Event')
     } else {
       res.status(404).json({
         status: false,
@@ -122,7 +122,7 @@ router.get("/getbyid/:id", urlencodedParser, async function (req, res, next) {
         result: null,
         error: null,
       });
-      logger.eventLogger.log('error','Error in getting the Event')
+      errorLogger.error('Error in getting the Event')
     }
   } catch (error) {
     res.status(500).json({
@@ -132,7 +132,7 @@ router.get("/getbyid/:id", urlencodedParser, async function (req, res, next) {
       result: null,
       error: error,
     });
-    logger.eventLogger.log('error','Error in getting the Event')
+    errorLogger.error('Error in getting the Event')
   }
   res.end();
 });
@@ -158,7 +158,7 @@ router.put("/update/:id", jsonParser, async function (req, res, next) {
         result: dbActionFeedback.result,
         error: null,
       });
-      logger.eventLogger.log('info','Successfully updated the Event')
+     eventLogger.info('Successfully updated the Event')
     } else {
       if (dbActionFeedback.statusCode == enums.NOT_FOUND) {
         res.status(404).json({
@@ -168,7 +168,7 @@ router.put("/update/:id", jsonParser, async function (req, res, next) {
           result: null,
           error: null,
         });
-        logger.eventLogger.log('error','Error in updating the Event')
+        errorLogger.error('Error in updating the Event')
       } else {
         res.status(500).json({
           status: false,
@@ -187,7 +187,7 @@ router.put("/update/:id", jsonParser, async function (req, res, next) {
       result: null,
       error: null,
     });
-    logger.eventLogger.log('error','Error in updating the Event')
+    errorLogger.error('Error in updating the Event')
   }
   res.end();
 });
@@ -208,9 +208,10 @@ router.delete(
           result: null,
           error: null,
         });
-        logger.eventLogger.log('info','Successfully deleted the Event')
+        eventLogger.info('Successfully deleted the Event')
       } else {
         if (dbActionFeedback.statusCode == enums.NOT_FOUND) {
+         errorLogger.error('Error in deleting the Event.Cannot find the Event')
           res.status(404).json({
             status: false,
             statusCode: enums.NOT_FOUND,
@@ -218,7 +219,7 @@ router.delete(
             result: null,
             error: null,
           });
-          logger.eventLogger.log('error','Error in deleting the Event')
+     
         } else {
           res.status(500).json({
             status: false,
@@ -227,6 +228,7 @@ router.delete(
             result: null,
             error: null,
           });
+          errorLogger.error('Error in deleting the Event.')
         }
       }
     } catch (error) {
@@ -237,7 +239,7 @@ router.delete(
         result: null,
         error: null,
       });
-      logger.eventLogger.log('error','Error in deleting the Event')
+      errorLogger.error('Error in deleting the Event')
     }
 
     res.end();

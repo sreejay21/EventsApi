@@ -6,14 +6,18 @@ const eventLogger =createLogger({
             filename:"events.log",
             level:'info',
             format:format.combine(format.timestamp(),format.json())
-        }),
-        new transports.File({
-            filename:'eventsError.log',
-            level:'error',
-            format:format.combine(format.timestamp(),format.json())
         })
-
     ]
-})
 
-module.exports={eventLogger}
+})
+const errorLogger = createLogger({
+    transports: [
+      new transports.File({
+        filename: 'events-error.log',
+        level: 'error',
+        format: format.combine(format.timestamp(), format.json())
+      })
+    ]
+  });
+
+module.exports={eventLogger,errorLogger}
