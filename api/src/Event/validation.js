@@ -17,8 +17,8 @@ exports.validateEvent=[
     .isEmpty()
     .withMessage("Event Title Cannot Be Empty")
     .bail()
-    .isLength({min:3,max:20})
-    .withMessage('Event Title must be Between 3 to 20 charcter')
+    .isLength({min:100,max:500})
+    .withMessage('Event Title must be Between 100 to 500 charcter')
     .bail(),
     check('details')
     .trim()
@@ -26,8 +26,8 @@ exports.validateEvent=[
     .isEmpty()
     .withMessage("Details Cannot be Empty.")
     .bail()
-    .isLength({min:3,max:20})
-    .withMessage('Event Details must be Between 3 to 20 charcter')
+    .isLength({min:100,max:500})
+    .withMessage('Event Details must be Between 100 to 500 charcter')
     .bail(),
     check('on')
     .trim()
