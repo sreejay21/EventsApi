@@ -7,7 +7,11 @@ var bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 var validationEvent = require("./validation");
 var enums = require("../../../enums");
+const middlewareRouter = require('./middlewareLogger')
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
+
+
+router.use(middlewareRouter.requestLoggerMiddleware)
 
 //Adding a new event
 router.post(
@@ -85,7 +89,7 @@ router.get(
         });
       }
     } catch (error) {
-      errorLogger.error("Error in getting the Event");
+      errorLogger.error("Error in getting the Event" +logMessage);
       res.status(500).json({
         status: false,
         statusCode: enums.INTERNAL_SERVER_ERROR,
